@@ -4,6 +4,20 @@
   font-size: 20px;
 }
 
+@media screen and (max-width: 650px) {
+  * {
+    font-size: 12px;
+  }
+
+  .title-container .title {
+    font-size: 15px;
+  }
+
+  .footer-container .title {
+    font-size: 15px;
+  }
+}
+
 #interface {
   z-index: 997;
 
@@ -86,10 +100,12 @@
 .footer-container {
   position: relative;
   float: left;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
-  padding-left: 5%;
-  padding-top: 10px;
+  padding-left: 5em;
+  height: 100%;
 }
 
 pre {
