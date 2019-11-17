@@ -104,8 +104,8 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  padding-left: 5em;
   height: 100%;
+  width: 100%;
 }
 
 pre {
