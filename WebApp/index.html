@@ -13,15 +13,22 @@
         <!--script type="text/javascript" src="lib/qrReader.js"></script-->
         <a-scene embedded vr-mode-ui='enabled: false' arjs='sourceType: webcam; trackingMethod: best;
            debugUIEnabled: false;' renderer='logarithmicDepthBuffer: true;'>
+
           <a-assets>
-            <img id="transpImage" src="static/noOK.png">
+            <img id="isOK" src="static/isOK.png">
+          </a-assets>
+
+          <a-assets>
+            <img id="noOK" src="static/noOK.png">
           </a-assets>
 
           <a-marker preset='hiro'>
-            <a-image rotation="270 0 0" width="1" height="1" src="#transpImage"></a-image>
+            <a-image rotation="270 0 0" width="1" height="1" src="#isOK"></a-image>
             <a-entity id="password" rotation="270 0 0" position="0.7 0 0.17" scale="2 2 2" text="value: Password-not-Found;color:black"></a-entity>
           </a-marker>
+
           <a-entity camera></a-entity>
+
         </a-scene>
         <div id="interface">
           <div id="nav">
