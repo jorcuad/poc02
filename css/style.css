@@ -125,6 +125,21 @@ pre {
   overflow: hidden;
 }
 
+/*.left-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+.left-container .poc-name {
+  transform-origin: 0 0;
+  transform: rotate(90deg);
+}*/
+
 #leftblack img {
   position: relative;
   opacity: 0.2;
