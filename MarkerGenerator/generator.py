@@ -4,6 +4,7 @@ from ecdsa import SigningKey
 import argparse
 from PyPDF2 import PdfFileReader
 from Crypto.Cipher import AES
+import qrcode
 
 def main(document_path, certificate_path=None):
     logger("================ INITIALICING ================")
@@ -48,6 +49,10 @@ def main(document_path, certificate_path=None):
     ciphertext = getCiphertext(data)
     logger("Ciphertext: " + str(ciphertext))
 
+    logger("================ Creating QRCode ================")
+    createQR(ciphertext)
+    logger("QR Code image created in the project folder.")
+
 def getFileMetadata(document_path):
     with open(document_path, 'rb') as f:
         pdf = PdfFileReader(f)
@@ -58,6 +63,15 @@ def getFileMetadata(document_path):
         for key in keys:
             concatenatedKeys += key + ":" + pdf.getObject(info.get(key)) + ";"
         return concatenatedKeys
+
+def createQR(ciphertext):
+    imagen = qrcode.make(ciphertext)
+    qrname = "cipherQR"
+    if(args.qrname):
+        qrname = args.qrname
+    archivo_imagen = open(qrname, 'wb')
+    imagen.save(archivo_imagen)
+    archivo_imagen.close()
 
 def getCiphertext(data):
     key = str.encode(args.cipherkey)
@@ -106,6 +120,7 @@ if __name__ == "__main__":
     parser.add_argument("-k", "--cipherkey", type=str, help="[MANDATORY] Key to cipher the QR data.",  required=True)
     parser.add_argument("-s", "--sensibility_level", type=str, help="[OPTIONAL] Set a level of sensibility: Private, Reserved, Public.")
     parser.add_argument("-o", "--owner", type=str, help="[OPTIONAL] The one who received this file.")
+    parser.add_argument("-q", "--qrname", type=str, help="[OPTIONAL] The name of the qr file generated.")
     args = parser.parse_args()
 
     if(args.certificate_path):
