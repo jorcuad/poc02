@@ -17,39 +17,21 @@ function decipher(ciphertext) {
   key = "soyunaclavesoyun"
 
   var ciphertext = CryptoJS.enc.Base64.parse(ciphertext);
-  console.log("CIPHERTEXT-BYTE")
-  console.log(ciphertext)
-  // split iv and ciphertext
+
   var iv = ciphertext.clone();
   iv.sigBytes = 16;
   iv.clamp();
   ciphertext.words.splice(0, 4); // delete 4 words = 16 bytes
   ciphertext.sigBytes -= 16;
 
-  console.log("IV: "+ iv)
-  console.log("CT: " + ciphertext)
-
   var key = CryptoJS.enc.Utf8.parse(key);
-
-  // decryption
   var decrypted = CryptoJS.AES.decrypt({ciphertext: ciphertext}, key, {
     iv: iv,
     mode: CryptoJS.mode.CFB
   });
 
-  console.log(decrypted)
-  console.log ( decrypted.toString(CryptoJS.enc.Latin1) );
+  return decrypted.toString(CryptoJS.enc.Latin1)
 }
-
-/*function _base64ToArrayBuffer(base64) {
-  var binary_string = window.atob(base64);
-  var len = binary_string.length;
-  var bytes = new Uint8Array(len);
-  for (var i = 0; i < len; i++) {
-    bytes[i] = binary_string.charCodeAt(i);
-  }
-  return bytes.buffer;
-}*/
 
 function ascii_to_hexa(str) {
   var arr1 = [];
@@ -81,12 +63,13 @@ function tick() {
       inversionAttempts: "dontInvert",
     });
     if (code) {
-      console.log(code.data);
-      console.log("_____________ DECHIPERING ___________");
-      decipher(code.data)
-      console.log("_____________ ----------- ___________");
+      var plaintext = decipher(code.data)
+      console.log(plaintext)
+      var obj = JSON.parse(plaintext);
+      console.log(obj)
 
-      document.getElementById('password').setAttribute("text", "value: " + code.data + ";color:black");
+      document.getElementById('owner').setAttribute("text", "value: " + obj.owner + ";color:black");
+      document.getElementById('lvl').setAttribute("text", "value: " + obj.sensibilityLevel + ";color:black");
       video.pause();
       delete video;
       delete canvas;

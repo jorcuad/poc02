@@ -19,7 +19,7 @@ def main(document_path, certificate_path=None):
 
     logger("================ GETTING FILE HMAC ================")
     hmac_content = getFileHMAC(document_path, certificate_path)
-    data = "CONTENT:" + str(hmac_content)
+    data = '{ "content":"' + str(hmac_content) + '",'
     logger("FILE HMAC SIGNATURE: " + str(hmac_content))
 
     logger("================ GETTING METADATA ================")
@@ -28,24 +28,24 @@ def main(document_path, certificate_path=None):
 
     logger("================ GETTING METADATA HMAC ================")
     hmac_metadata = getMessageHMAC(str.encode(metadata))
-    data += ";Metadata:" + str(hmac_metadata)
+    data += '"metadata":"' + str(hmac_metadata) + '",'
     logger(hmac_metadata)
 
     logger("================ OWNERSHIP ================")
     owner = ""
     if(args.owner):
         logger("SETTING OWNER: " + args.owner)
-        data += ";Owner:" + args.owner
+        data += '"owner":"' + args.owner + '",'
     else:
         logger("NO OWNER SETTED.")
 
     logger("================ SENSIBILITY LEVEL ================")
     if(args.sensibility_level):
         logger("Setting sensibility level: " + args.sensibility_level)
-        data += ";SensibilityLevel:" + args.sensibility_level
+        data += '"sensibilityLevel":' + args.sensibility_level + '",'
     else:
         logger("No sensibility level selected, default is: Public.")
-        data += ";SensibilityLevel:Public"
+        data += '"sensibilityLevel":"public"}'
 
     logger("================ Ciphering Information ================")
     logger("DATA: " + data)
@@ -114,14 +114,14 @@ def getFileHMAC(document_path, certificate_path):
     with open(document_path, "rb") as f:
         message = f.read()
     sig = sk.sign(message)
-    return sig
+    return base64.b64encode(sig).decode("utf-8")
 
 def getMessageHMAC(strMessage):
     with open("private.pem") as f:
         sk = SigningKey.from_pem(f.read())
     message = strMessage
     sig = sk.sign(message)
-    return sig
+    return base64.b64encode(sig).decode("utf-8")
 
 def getFileBinaryRepresentation(document_path):
     bytetable = [("00000000"+bin(x)[2:])[-8:] for x in range(256)]
