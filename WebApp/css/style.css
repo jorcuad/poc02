@@ -13,6 +13,11 @@
     font-size: 15px;
   }
 
+  #leftblack .left-container .poc-name {
+    font-size: 25px;
+    top: 30%;
+  }
+
   .footer-container .title {
     font-size: 15px;
   }
@@ -125,10 +130,10 @@ pre {
   overflow: hidden;
 }
 
-/*.left-container {
+.left-container {
   position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   text-align: center;
   height: 100%;
@@ -136,9 +141,15 @@ pre {
 }
 
 .left-container .poc-name {
+  display: block;
+  position: fixed;
+  top: 22%;
+  left: 11%;
   transform-origin: 0 0;
   transform: rotate(90deg);
-}*/
+  font-size: 35px;
+  font-weight: bold;
+}
 
 #leftblack img {
   position: relative;

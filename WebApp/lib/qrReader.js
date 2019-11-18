@@ -65,11 +65,21 @@ function tick() {
     if (code) {
       var plaintext = decipher(code.data)
       console.log(plaintext)
-      var obj = JSON.parse(plaintext);
-      console.log(obj)
 
-      document.getElementById('owner').setAttribute("text", "value: " + obj.owner + ";color:black");
-      document.getElementById('lvl').setAttribute("text", "value: " + obj.sensibilityLevel + ";color:black");
+
+      try {
+        var obj = JSON.parse(plaintext);
+        console.log(obj)
+        document.getElementById('panel').setAttribute("src", "#isOK");
+        document.getElementById('owner').setAttribute("text", "value: " + obj.owner + ";color:black");
+        document.getElementById('lvl').setAttribute("text", "value: " + obj.sensibilityLevel + ";color:black");
+      } catch (e) {
+        console.log("NO-OK")
+        document.getElementById('panel').setAttribute("src", "#noOK");
+        document.getElementById('owner').setAttribute("text", "value: " + obj.owner + ";color:black");
+        document.getElementById('lvl').setAttribute("text", "value: " + obj.sensibilityLevel + ";color:black");
+      }
+
       video.pause();
       delete video;
       delete canvas;

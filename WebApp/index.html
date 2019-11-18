@@ -19,12 +19,16 @@
             <img id="isOK" src="static/isOK.png">
           </a-assets>
 
+          <!--a-assets> #TODO DEBE EMPEZAR EN ESTE ESTADO.
+            <img id="unknown" src="static/unknown.png">
+          </a-assets-->
+
           <a-assets>
             <img id="noOK" src="static/noOK.png">
           </a-assets>
 
           <a-marker preset='hiro'>
-            <a-image rotation="270 0 0" width="1" height="1" src="#isOK"></a-image>
+            <a-image id="panel" rotation="270 0 0" width="2.5" height="1.87" src="#isOK"></a-image>
             <a-entity id="owner" rotation="270 0 0" position="-0.2 0 0.8" scale="2 2 2" text="value: owner;color:black"></a-entity>
             <a-entity id="lvl" rotation="270 0 0" position="1.2 0 0.8" scale="2 2 2" text="value: lvl;color:black"></a-entity>
           </a-marker>
@@ -42,9 +46,9 @@
           </div>
           <div id="leftblack">
             <img class="nodebg" src="static/node-filter.png"/>
-            <!--div class="left-container">
+            <div class="left-container">
               <span class="poc-name">PoC02: Watermarking with AR</span>
-            </div-->
+            </div>
           </div>
           <div id="rightblack">
             <img class="nodebg" src="static/node-filter.png"/>
