@@ -5,6 +5,9 @@ import argparse
 from PyPDF2 import PdfFileReader
 from Crypto.Cipher import AES
 import qrcode
+import base64
+import random
+from Crypto import Random
 
 def main(document_path, certificate_path=None):
     logger("================ INITIALICING ================")
@@ -16,8 +19,8 @@ def main(document_path, certificate_path=None):
 
     logger("================ GETTING FILE HMAC ================")
     hmac_content = getFileHMAC(document_path, certificate_path)
-    data = "Content:" + str(hmac_content)
-    logger("File HMAC signature: " + str(hmac_content))
+    data = "CONTENT:" + str(hmac_content)
+    logger("FILE HMAC SIGNATURE: " + str(hmac_content))
 
     logger("================ GETTING METADATA ================")
     metadata = getFileMetadata(document_path)
@@ -31,23 +34,24 @@ def main(document_path, certificate_path=None):
     logger("================ OWNERSHIP ================")
     owner = ""
     if(args.owner):
-        logger("Setting owner: " + args.owner)
+        logger("SETTING OWNER: " + args.owner)
         data += ";Owner:" + args.owner
     else:
-        logger("No owner setted.")
+        logger("NO OWNER SETTED.")
 
     logger("================ SENSIBILITY LEVEL ================")
     if(args.sensibility_level):
         logger("Setting sensibility level: " + args.sensibility_level)
-        ";SensibilityLevel:" + args.sensibility_level
+        data += ";SensibilityLevel:" + args.sensibility_level
     else:
         logger("No sensibility level selected, default is: Public.")
-        ";SensibilityLevel:Public"
+        data += ";SensibilityLevel:Public"
 
     logger("================ Ciphering Information ================")
-    logger("Data: " + data)
-    ciphertext = getCiphertext(data)
-    logger("Ciphertext: " + str(ciphertext))
+    logger("DATA: " + data)
+    ciphertext = encrypt(data, args.cipherkey)
+    logger("CIPHERTEXT: ")
+    logger(ciphertext)
 
     logger("================ Creating QRCode ================")
     createQR(ciphertext)
@@ -66,19 +70,35 @@ def getFileMetadata(document_path):
 
 def createQR(ciphertext):
     imagen = qrcode.make(ciphertext)
-    qrname = "cipherQR"
+    qrname = "cipherQR.png"
     if(args.qrname):
         qrname = args.qrname
     archivo_imagen = open(qrname, 'wb')
     imagen.save(archivo_imagen)
     archivo_imagen.close()
 
-def getCiphertext(data):
-    key = str.encode(args.cipherkey)
-    cipher = AES.new(key, AES.MODE_EAX)
-    nonce = cipher.nonce
-    ciphertext, tag = cipher.encrypt_and_digest(data.encode("utf-8"))
-    return ciphertext
+def pad(data):
+    length = 16 - (len(data) % 16)
+    return data + chr(length)*length
+
+def unpad(data):
+    return data[:-ord(data[-1])]
+
+def encrypt(message, passphrase):
+    BLOCK_SIZE = 16
+    IV = Random.new().read(BLOCK_SIZE)
+    aes = AES.new(str.encode(passphrase), AES.MODE_CFB, IV, segment_size=128)
+    b64IV = base64.b64encode(IV).decode('utf-8')
+    logger("IV: " + b64IV)
+    b64CT = base64.b64encode(IV + aes.encrypt(pad(message).encode('utf8'))).decode('utf-8')
+    return b64CT
+
+def decrypt(encrypted, passphrase):
+    BLOCK_SIZE = 16
+    encrypted = base64.b64decode(encrypted)
+    IV = encrypted[:BLOCK_SIZE]
+    aes = AES.new(passphrase, AES.MODE_CFB, IV, segment_size=128)
+    return unpad(aes.decrypt(encrypted[BLOCK_SIZE:]))
 
 def createKeys():
     sk = SigningKey.generate()
